@@ -26,6 +26,7 @@ import "./Sidebar.css";
 
 const Sidebar = ({ collapsed, setCollapsed, isMobile }) => {
   const [adminInfo, setAdminInfo] = useState({ name: "", email: "" });
+  const [reload, setReload] = useState(0);
   const [activeSubmenu, setActiveSubmenu] = useState(null);
   const [unreadCount, setUnreadCount] = useState(0);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
@@ -35,24 +36,28 @@ const Sidebar = ({ collapsed, setCollapsed, isMobile }) => {
   const { logout } = useAuth();
 
   // Load admin profile
-  useEffect(() => {
-    const fetchProfile = async () => {
 
+useEffect(() => {
+  const fetchProfile = async () => {
+    try {
+      const { data } = await axios.get(
+        "http://localhost:8000/api/v1/public/profile"
+      );
+      setAdminInfo(data.data);
+    } catch (err) {
+      console.error("Failed to fetch admin profile", err);
+      localStorage.removeItem("adminToken");
+      setAdminInfo({ name: "", email: "" });
+    }
+  };
+  fetchProfile();
+}, [reload]);   // <‑‑ add dependency
 
-      try {
-        const { data } = await axios.get(
-          "http://localhost:8000/api/v1/public/profile"
-        );
-        setAdminInfo(data.data);
-      } catch (err) {
-        console.error("Failed to fetch admin profile", err);
-        localStorage.removeItem("adminToken");
-        setAdminInfo({ name: "", email: "" });
-      }
-    };
+const saveProfile = async () => {
+  await axios.put(/* … */);
+  setReload(r => r + 1);   // triggers the effect again
+};
 
-    fetchProfile();
-  }, []);
 
   // Fetch unread messages count
   useEffect(() => {
@@ -259,7 +264,7 @@ const Sidebar = ({ collapsed, setCollapsed, isMobile }) => {
                   </NavLink>
                   <button
                     onClick={handleLogout}
-                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    className="block cursor-pointer w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                   >
                     Logout
                   </button>

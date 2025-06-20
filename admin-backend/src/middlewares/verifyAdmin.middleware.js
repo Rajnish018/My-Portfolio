@@ -30,7 +30,7 @@ export const verifyAdmin = (req, res, next) => {
       });
     }
 
-    req.user = decoded;                               // attach user info
+   req.admin = decoded;                        // attach user info
     next();
   } catch (err) {
     console.error("JWT verify failed:", err);

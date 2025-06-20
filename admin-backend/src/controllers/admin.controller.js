@@ -1,127 +1,73 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import fs from "fs";
-import path from "path";
-import { fileURLToPath } from "url";
 import { ApiError } from "../services/ApiError.js";
 import { ApiRespose } from "../services/ApiResponse.js";
-
-// Get current directory path
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const PROFILE_PATH = path.join(__dirname, "..", "data", "adminProfile.json");
-
-// Initialize admin profile file
-const initAdminProfile = () => {
-  if (!fs.existsSync(path.dirname(PROFILE_PATH))) {
-    fs.mkdirSync(path.dirname(PROFILE_PATH), { recursive: true });
-  }
-
-  if (!fs.existsSync(PROFILE_PATH)) {
-    const defaultProfile = {
-      name: process.env.ADMIN_NAME || "Admin",
-      email: process.env.ADMIN_EMAIL,
-      password: bcrypt.hashSync(process.env.ADMIN_PASSWORD, 10),
-      avatar: "",
-      createdAt: new Date().toISOString(),
-    };
-    fs.writeFileSync(PROFILE_PATH, JSON.stringify(defaultProfile, null, 2));
-  } else {
-    // Ensure existing profile has password
-    try {
-      const profile = JSON.parse(fs.readFileSync(PROFILE_PATH, "utf8"));
-      if (!profile.password) {
-        profile.password = bcrypt.hashSync(process.env.ADMIN_PASSWORD, 10);
-        fs.writeFileSync(PROFILE_PATH, JSON.stringify(profile, null, 2));
-        console.log("Added missing password to admin profile");
-      }
-    } catch (err) {
-      console.error("Error checking admin profile:", err);
-    }
-  }
-};
-
-initAdminProfile();
-
-// Helper functions for profile management
-const readAdminProfileFromFile = () => {
-  try {
-    const data = fs.readFileSync(PROFILE_PATH, "utf8");
-    return JSON.parse(data);
-  } catch (err) {
-    console.error("Error reading admin profile:", err);
-    throw new ApiError(500, "Failed to load admin profile");
-  }
-};
-
-const updateAdminProfileInFile = (updates, { allowPassword = false } = {}) => {
-  try {
-    const currentProfile = readAdminProfileFromFile();
-
-    const protectedFields = ["email", "createdAt"];
-    if (!allowPassword) protectedFields.push("password"); // 🚩
-
-    const filteredUpdates = Object.fromEntries(
-      Object.entries(updates).filter(
-        ([key]) => !protectedFields.includes(key)
-      )
-    );
-
-    const updatedProfile = { ...currentProfile, ...filteredUpdates };
-    fs.writeFileSync(PROFILE_PATH, JSON.stringify(updatedProfile, null, 2));
-    return updatedProfile;
-  } catch (err) {
-    console.error("Error updating admin profile:", err);
-    throw new ApiError(500, "Failed to update admin profile");
-  }
-};
+import {AdminAccount as Admin } from "../model/adminAccount.model.js";
 
 const getAdminProfile = async (req, res) => {
   try {
-    const profile = readAdminProfileFromFile();
-    // Remove password before sending response
-    const { password, ...profileWithoutPassword } = profile;
-    return res.status(200).json(new ApiRespose(200, profileWithoutPassword));
+    const admin = await Admin.findById("68551bce56225de26641d8da").select("-password");
+   
+    if (!admin) {
+      return res.status(404).json(new ApiError(404, "Admin not found"));
+    }
+
+    return res.status(200).json(new ApiRespose(200, admin));
   } catch (error) {
     return res
       .status(500)
       .json(new ApiError(500, "Failed to fetch admin profile"));
   }
 };
-
+// admin.controller.js
 const updateAdminProfile = async (req, res) => {
-  const { name, avatar } = req.body;
+  // Add authentication check
+  if (!req.admin || !req.admin._id) {
+    return res.status(401).json(
+      new ApiError(401, "Unauthorized: Admin not authenticated")
+    );
+  }
+
+  const { name } = req.body;
 
   try {
-    if (!name) {
+    if (!name || name.trim() === "") {
       return res.status(400).json(new ApiError(400, "Name is required"));
     }
+    if (!req.admin || !req.admin._id) {
+    return res.status(401).json(
+      new ApiError(401, "Unauthorized: Admin not authenticated")
+    );
+  }
 
-    const updatedProfile = updateAdminProfileInFile({ name, avatar });
+    // Use req.admin._id here
+    const updatedAdmin = await Admin.findByIdAndUpdate(
+      req.admin._id,  // 👈 Now using the correct property
+      { name: name.trim() },
+      { new: true, runValidators: true }
+    ).select("-password");
 
-    // Remove password before sending response
-    const { password, ...profileWithoutPassword } = updatedProfile;
-    return res
-      .status(200)
-      .json(
-        new ApiRespose(
-          200,
-          profileWithoutPassword,
-          "Profile updated successfully"
-        )
-      );
+    if (!updatedAdmin) {
+      return res.status(404).json(new ApiError(404, "Admin not found"));
+    }
+
+    return res.status(200).json(
+      new ApiRespose(200, updatedAdmin, "Profile updated successfully")
+    );
   } catch (error) {
     console.error("Profile update error:", error);
-    return res.status(500).json(new ApiError(500, "Failed to update profile"));
+    if (error.name === 'ValidationError') {
+      const errors = Object.values(error.errors).map(err => err.message);
+      return res.status(400).json(new ApiError(400, errors.join(', ')));
+    }
+    return res.status(500).json(
+      new ApiError(500, error.message || "Failed to update profile")
+    );
   }
 };
-
 const changeAdminPassword = async (req, res) => {
   const { oldPassword, newPassword } = req.body;
-  
-  console.log("Change password request:", req.body);
-const profile = readAdminProfileFromFile();
-console.log("Current profile:", profile);
+
   try {
     if (!oldPassword || !newPassword) {
       return res
@@ -129,34 +75,28 @@ console.log("Current profile:", profile);
         .json(new ApiError(400, "Both old and new passwords are required"));
     }
 
-    const profile = readAdminProfileFromFile();
+    const admin = await Admin.findById(req.admin._id);
+    if (!admin) {
+      return res.status(404).json(new ApiError(404, "Admin not found"));
+    }
 
-    console.log("Current profile:", profile);
-    const isMatch = await bcrypt.compare(oldPassword, profile.password);
-
-    console.log("Password match result:", isMatch);
-
+    const isMatch = await bcrypt.compare(oldPassword, admin.password);
     if (!isMatch) {
       return res
         .status(401)
         .json(new ApiError(401, "Old password is incorrect"));
     }
 
-    const hashedPassword = await bcrypt.hash(newPassword, 10);
-    const updatedProfile = updateAdminProfileInFile({
-      password: hashedPassword,
+    admin.password = await bcrypt.hash(newPassword, 10);
+    await admin.save();
 
-    }, { allowPassword: true } );
-
-    // Remove password before sending response
-    const { password, ...profileWithoutPassword } = updatedProfile;
-    console.log("Updated profile without password:", profileWithoutPassword);
+    const { password, ...adminWithoutPassword } = admin.toObject();
     return res
       .status(200)
       .json(
         new ApiRespose(
           200,
-          profileWithoutPassword,
+          adminWithoutPassword,
           "Password updated successfully"
         )
       );
@@ -168,7 +108,6 @@ console.log("Current profile:", profile);
 
 const getDashboard = async (req, res) => {
   try {
-    // Placeholder dashboard data
     const dashboardData = {
       users: 1500,
       revenue: "$45,230",
@@ -188,8 +127,8 @@ const getDashboard = async (req, res) => {
 const loginAdmin = async (req, res) => {
   try {
     const { email, password } = req.body;
-
-    // Add more robust validation
+    
+    // Validate input
     if (!email || !password) {
       return res.status(400).json({
         statusCode: 400,
@@ -198,21 +137,10 @@ const loginAdmin = async (req, res) => {
       });
     }
 
-    const profile = readAdminProfileFromFile();
-
-    // Add null checks for profile
-    if (!profile || !profile.email || !profile.password) {
-      return res.status(500).json({
-        statusCode: 500,
-        message: "Admin profile configuration error",
-        success: false
-      });
-    }
-
-    const emailMatch = email === profile.email;
-    const passwordMatch = await bcrypt.compare(password, profile.password);
-
-    if (!emailMatch || !passwordMatch) {
+    // Case-insensitive email search
+    console.log(await Admin.findOne({ email: email.toLowerCase() }))
+    const admin=await Admin.findOne({ email: email.toLowerCase() })
+    if (!admin) {
       return res.status(401).json({
         statusCode: 401,
         message: "Invalid credentials",
@@ -220,7 +148,17 @@ const loginAdmin = async (req, res) => {
       });
     }
 
-    // Ensure JWT_SECRET exists
+    // Verify password
+    const passwordMatch = await bcrypt.compare(password.trim(), admin.password);
+    if (!passwordMatch) {
+      return res.status(401).json({
+        statusCode: 401,
+        message: "Invalid credentials",
+        success: false
+      });
+    }
+
+    // Verify JWT secret
     if (!process.env.JWT_SECRET) {
       console.error("JWT_SECRET is not defined");
       return res.status(500).json({
@@ -230,19 +168,26 @@ const loginAdmin = async (req, res) => {
       });
     }
 
+    // Generate token
     const token = jwt.sign(
-      { email: profile.email, role: "admin" },
+      { 
+        _id: admin._id, 
+        email: admin.email, 
+        role: "admin" 
+      },
       process.env.JWT_SECRET,
       { expiresIn: process.env.JWT_EXPIRATION || "1d" }
     );
 
-    const { password: _, ...safeProfile } = profile;
+    // Prepare safe admin object
+    const safeAdmin = admin.toObject();
+    delete safeAdmin.password;
 
     return res.status(200).json({
       statusCode: 200,
       data: { 
-        profile: safeProfile, 
-        token  // Ensure token is sent in response
+        profile: safeAdmin, 
+        token
       },
       message: "Login successful",
       success: true
@@ -252,45 +197,43 @@ const loginAdmin = async (req, res) => {
     console.error("Login error:", err);
     return res.status(500).json({
       statusCode: 500,
-      message: err.message || "Login failed",
+      message: "Internal server error",
       success: false
     });
   }
 };
 
-// controller/admin.controller.js
-// import { ApiError }     from "../services/ApiError.js";
-// import { ApiResponse }  from "../services/ApiResponse.js";
-// import { updateAdminProfileInFile } from "../utils/profileStore.js"; // adjust path
-
 const uploadAdminAvatar = async (req, res) => {
   try {
-    // 1. Ensure file is uploaded
+    if (!req.admin || !req.admin._id) {
+    return res.status(401).json(
+      new ApiError(401, "Unauthorized: Admin not authenticated")
+    );
+  }
     if (!req.file) {
       return res
         .status(400)
         .json(new ApiError(400, "Avatar file is required"));
     }
 
-    // 2. Build relative and absolute paths
-    const avatarPath = `/uploads/${req.file.filename}`;
-    const absoluteUrl = `${req.protocol}://${req.get("host")}${avatarPath}`;
+    const absoluteUrl = `${req.protocol}://${req.get("host")}/uploads/${req.file.filename}`;
 
-    // 3. Save avatarPath or absoluteUrl to profile file/database
-    const updatedProfile = updateAdminProfileInFile({ avatar: absoluteUrl }); // ✅ Store absolute URL
-    if (!updatedProfile) {
+    const updatedAdmin = await Admin.findByIdAndUpdate(
+      req.admin._id,
+      { avatar: absoluteUrl },
+      { new: true }
+    ).select("-password");
+
+    if (!updatedAdmin) {
       return res
-        .status(500)
-        .json(new ApiError(500, "Failed to update profile with avatar"));
+        .status(404)
+        .json(new ApiError(404, "Admin not found"));
     }
-
-    // 4. Strip password (if any) and return updated profile
-    const { password, ...profileWithoutPassword } = updatedProfile;
 
     return res.status(200).json(
       new ApiRespose(
         200,
-        { url: absoluteUrl, profile: profileWithoutPassword }, // ✅ Return usable avatar URL
+        { url: absoluteUrl, profile: updatedAdmin },
         "Avatar uploaded successfully"
       )
     );
@@ -301,7 +244,6 @@ const uploadAdminAvatar = async (req, res) => {
       .json(new ApiError(500, "Failed to upload avatar"));
   }
 };
-
 
 export {
   getAdminProfile,

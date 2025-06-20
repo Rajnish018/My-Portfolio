@@ -191,54 +191,59 @@ export default function Profile() {
       setUploading(false);
     }
   };
-
   const handleSave = async (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    if (profile.name === initialProfile?.name) {
-      setIsEditing(false);
-      return;
-    }
+  if (profile.name.trim() === initialProfile?.name) {
+    setIsEditing(false);
+    return;
+  }
 
-    setSaving(true);
-    setError("");
-    setSuccess("");
+  setSaving(true);
+  setError("");
+  setSuccess("");
 
-    try {
-      const { data } = await axios.patch(
-        `${API_BASE_URL}/api/v1/admin/profile`,
-        { name: profile.name },
-        config()
-      );
+  try {
+    const { data } = await axios.patch(
+      `${API_BASE_URL}/api/v1/admin/profile`,
+      { name: profile.name.trim() },
+      config()
+    );
 
-      const updatedProfile = data.data;
-      setSuccess("Profile updated successfully!");
+    const updatedProfile = data.data;
+    setSuccess("Profile updated successfully!");
 
-      localStorage.setItem(
-        "adminProfile",
-        JSON.stringify({
-          ...JSON.parse(localStorage.getItem("adminProfile")),
-          name: updatedProfile.name,
-        })
-      );
-
-      setInitialProfile({
+    localStorage.setItem(
+      "adminProfile",
+      JSON.stringify({
+        ...JSON.parse(localStorage.getItem("adminProfile")),
         name: updatedProfile.name,
-        email: updatedProfile.email,
-      });
+      })
+    );
 
-      setProfile((prev) => ({ ...prev, name: updatedProfile.name }));
-      setIsEditing(false);
-    } catch (err) {
-      console.error("Profile save error:", err);
-      setError(err.response?.data?.message || "Failed to save changes");
-    } setSaving(false);
-  setTimeout(() => {
-    setSuccess(false)
-  }, 2000);
+    setInitialProfile({
+      name: updatedProfile.name,
+      email: updatedProfile.email,
+    });
+
+    setProfile((prev) => ({ ...prev, name: updatedProfile.name }));
+    setIsEditing(false);
+  } catch (err) {
+    console.error("Profile save error:", err);
     
-  
-  };
+    // Improved error handling
+    const errorMessage = err.response?.data?.message 
+      || err.message 
+      || "Failed to save changes";
+    
+    setError(errorMessage);
+  } finally {
+    setSaving(false);
+  }
+};
+
+// In the success message section, update the timeout:
+setTimeout(() => setSuccess(""), 3000); // Increased to 3 seconds
 
   const triggerFileInput = () => fileInputRef.current?.click();
 
