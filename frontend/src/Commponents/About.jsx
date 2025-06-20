@@ -65,7 +65,8 @@ const About = () => {
   const [activeTab, setActiveTab] = useState("skills");
   const [typewriterStarted, setTypewriterStarted] = useState(false);
   const aboutRef = useRef(null);
-  const isInView = useInView(aboutRef, { once: true, amount: 0.1 });
+  const isInView = typeof window !== "undefined" ? useInView(aboutRef, { once: true, amount: 0.1 }) : false;
+
   const [skills, setSkills] = useState([]);
   const [education, setEducation] = useState([]);
   const [certifications, setCertifications] = useState([]);
@@ -78,8 +79,10 @@ const About = () => {
 
       try {
         const res = await axios.get(
-          "https://my-portfolio-zp97.onrender.com/api/v1/public/skills",
+           `${import.meta.env.VITE_API_BASE_URL}/api/v1/public/skills`
         );
+
+        console.log("response from fetch skill",res)
 
         const skillsRaw = res.data?.data?.skills || [];
 
@@ -120,7 +123,7 @@ const About = () => {
       setLoading(true);
       try {
         const res = await axios.get(
-          "https://my-portfolio-zp97.onrender.com/api/v1/public/education",
+           `${import.meta.env.VITE_API_BASE_URL}/api/v1/public/education `
         );
         const educationRaw = res.data?.data ?? [];
 
@@ -153,7 +156,7 @@ const About = () => {
 
       try {
         const res = await axios.get(
-          "https://my-portfolio-zp97.onrender.com/api/v1/public/certifications",
+          `${import.meta.env.VITE_API_BASE_URL}/api/v1/public/certifications`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
 
