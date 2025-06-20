@@ -41,7 +41,7 @@ useEffect(() => {
   const fetchProfile = async () => {
     try {
       const { data } = await axios.get(
-        "http://localhost:8000/api/v1/public/profile"
+        "https://my-portfolio-zp97.onrender.com/api/v1/public/profile"
       );
       setAdminInfo(data.data);
     } catch (err) {
@@ -66,7 +66,7 @@ const saveProfile = async () => {
         const token = localStorage.getItem("adminToken");
         console.log(token)
         const res = await axios.get(
-          "http://localhost:8000/api/v1/admin/messages/unread-count",
+          "https://my-portfolio-zp97.onrender.com/api/v1/admin/messages/unread-count",
           { headers: { Authorization: `Bearer ${token}` } }
         );
         console.log(res)

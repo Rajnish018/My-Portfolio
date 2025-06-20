@@ -78,7 +78,7 @@ const About = () => {
 
       try {
         const res = await axios.get(
-          "http://localhost:8000/api/v1/public/skills",
+          "https://my-portfolio-zp97.onrender.com/api/v1/public/skills",
         );
 
         const skillsRaw = res.data?.data?.skills || [];
@@ -120,7 +120,7 @@ const About = () => {
       setLoading(true);
       try {
         const res = await axios.get(
-          "http://localhost:8000/api/v1/public/education",
+          "https://my-portfolio-zp97.onrender.com/api/v1/public/education",
         );
         const educationRaw = res.data?.data ?? [];
 
@@ -153,7 +153,7 @@ const About = () => {
 
       try {
         const res = await axios.get(
-          "http://localhost:8000/api/v1/public/certifications",
+          "https://my-portfolio-zp97.onrender.com/api/v1/public/certifications",
           { headers: { Authorization: `Bearer ${token}` } }
         );
 

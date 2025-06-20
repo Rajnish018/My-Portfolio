@@ -25,7 +25,7 @@ export default function Profile() {
   const copyTimeoutRef = useRef(null);
 
   const API_BASE_URL =
-    import.meta.env.VITE_APP_API_BASE_URL || "http://localhost:8000";
+    import.meta.env.VITE_APP_API_BASE_URL || "https://my-portfolio-zp97.onrender.com";
 
   const config = (isForm = false) => {
     const token = localStorage.getItem("adminToken");

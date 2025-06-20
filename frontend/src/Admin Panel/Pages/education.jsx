@@ -23,7 +23,7 @@ export default function EducationAdmin() {
       try {
         const token = localStorage.getItem("adminToken");
         const { data } = await axios.get(
-          "http://localhost:8000/api/v1/admin/education",
+          "https://my-portfolio-zp97.onrender.com/api/v1/admin/education",
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -74,20 +74,20 @@ export default function EducationAdmin() {
     try {
       if (editingId) {
         await axios.patch(
-          `http://localhost:8000/api/v1/admin/education/${editingId}`,
+          `https://my-portfolio-zp97.onrender.com/api/v1/admin/education/${editingId}`,
           form,
           config
         );
       } else {
         await axios.post(
-          "http://localhost:8000/api/v1/admin/education",
+          "https://my-portfolio-zp97.onrender.com/api/v1/admin/education",
           form,
           config
         );
       }
 
       const { data } = await axios.get(
-        "http://localhost:8000/api/v1/admin/education", 
+        "https://my-portfolio-zp97.onrender.com/api/v1/admin/education", 
         config
       );
       setRecords(Array.isArray(data?.data) ? data.data : data.educations ?? []);
@@ -104,7 +104,7 @@ export default function EducationAdmin() {
     if (!window.confirm("Delete this education entry?")) return;
     const token = localStorage.getItem("adminToken");
     try {
-      await axios.delete(`http://localhost:8000/api/v1/admin/education/${id}`, {
+      await axios.delete(`https://my-portfolio-zp97.onrender.com/api/v1/admin/education/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setRecords((prev) => prev.filter((r) => r._id !== id));

@@ -19,7 +19,7 @@ const Hero = () => {
   useEffect(() => {
     const fetchImage = async () => {
       try {
-        const res = await fetch("http://localhost:8000/api/v1/public/profile");
+        const res = await fetch("https://my-portfolio-zp97.onrender.com/api/v1/public/profile");
         const data = await res.json();
         setProfileImage(data?.data?.avatar || "/assets/default-avatar.svg");
         setUserName(data?.data?.name   || "Rajnish Kumar");

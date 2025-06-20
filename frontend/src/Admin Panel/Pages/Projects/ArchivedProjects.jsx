@@ -11,7 +11,7 @@ const ArchivedProjects = () => {
       try {
         const token = localStorage.getItem("adminToken");
         const res = await axios.get(
-          "http://localhost:8000/api/v1/admin/projects/archived-featured",
+          "https://my-portfolio-zp97.onrender.com/api/v1/admin/projects/archived-featured",
           { headers: { Authorization: `Bearer ${token}` } }
         );
         setProjects(Array.isArray(res.data.archivedProjects) ? res.data.archivedProjects : []);

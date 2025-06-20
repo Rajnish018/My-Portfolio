@@ -43,7 +43,7 @@ const Contact = () => {
   setIsSubmitting(true);
 
   try {
-    await axios.post("http://localhost:8000/api/v1/public/contacts", {
+    await axios.post("https://my-portfolio-zp97.onrender.com/api/v1/public/contacts", {
       ...formData,                    // name, email, message
       subject: "Portfolio Feedback",
     });

@@ -47,7 +47,7 @@ const DashboardHome = () => {
         }
 
         const { data } = await axios.get(
-          "http://localhost:8000/api/v1/admin/dashboard/summary",
+          "https://my-portfolio-zp97.onrender.com/api/v1/admin/dashboard/summary",
           { headers: { Authorization: `Bearer ${token}` } }
         );
         

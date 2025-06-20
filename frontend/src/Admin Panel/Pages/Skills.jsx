@@ -47,7 +47,7 @@ export default function SkillsAdmin() {
       const token = localStorage.getItem("adminToken");
       if (!token) throw new Error("No admin token found");
 
-      const res = await axios.get("http://localhost:8000/api/v1/public/skills", {
+      const res = await axios.get("https://my-portfolio-zp97.onrender.com/api/v1/public/skills", {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -118,13 +118,13 @@ export default function SkillsAdmin() {
       
       if (editingSkill) {
         await axios.patch(
-          `http://localhost:8000/api/v1/admin/skills/${editingSkill}`,
+          `https://my-portfolio-zp97.onrender.com/api/v1/admin/skills/${editingSkill}`,
           skillData,
           { headers: { Authorization: `Bearer ${token}` } }
         );
       } else {
         await axios.post(
-          "http://localhost:8000/api/v1/admin/skills",
+          "https://my-portfolio-zp97.onrender.com/api/v1/admin/skills",
           skillData,
           { headers: { Authorization: `Bearer ${token}` } }
         );
@@ -150,7 +150,7 @@ export default function SkillsAdmin() {
     try {
       const token = localStorage.getItem("adminToken");
       console.log("handle to delete",token)
-      await axios.delete(`http://localhost:8000/api/v1/admin/skills/${id}`, {
+      await axios.delete(`https://my-portfolio-zp97.onrender.com/api/v1/admin/skills/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       fetchSkills();

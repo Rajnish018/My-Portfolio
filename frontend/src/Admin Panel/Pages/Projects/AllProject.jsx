@@ -58,14 +58,14 @@ const AllProjects = () => {
       try {
         const token = localStorage.getItem("adminToken");
         const projectsRes = await axios.get(
-          "http://localhost:8000/api/v1/public/projects",
+          "https://my-portfolio-zp97.onrender.com/api/v1/public/projects",
           { headers: { Authorization: `Bearer ${token}` } }
         );
         
         const projectsData = projectsRes.data?.data?.projects || [];
         
         const skillsRes = await axios.get(
-          "http://localhost:8000/api/v1/public/skills",
+          "https://my-portfolio-zp97.onrender.com/api/v1/public/skills",
           { headers: { Authorization: `Bearer ${token}` } }
         );
         
@@ -141,7 +141,7 @@ const AllProjects = () => {
     try {
       const token = localStorage.getItem("adminToken");
       const response = await axios.post(
-        "http://localhost:8000/api/v1/admin/upload-project-image",
+        "https://my-portfolio-zp97.onrender.com/api/v1/admin/upload-project-image",
         formData,
         {
           headers: {
@@ -211,20 +211,20 @@ const AllProjects = () => {
 
       if (editingProject && editingProject !== "new") {
         await axios.patch(
-          `http://localhost:8000/api/v1/admin/projects/${editingProject}`,
+          `https://my-portfolio-zp97.onrender.com/api/v1/admin/projects/${editingProject}`,
           payload,
           config
         );
       } else {
         await axios.post(
-          "http://localhost:8000/api/v1/admin/projects",
+          "https://my-portfolio-zp97.onrender.com/api/v1/admin/projects",
           payload,
           config
         );
       }
 
       const refreshed = await axios.get(
-        "http://localhost:8000/api/v1/public/projects",
+        "https://my-portfolio-zp97.onrender.com/api/v1/public/projects",
         { headers: { Authorization: `Bearer ${token}` } }
       );
       
@@ -250,7 +250,7 @@ const AllProjects = () => {
       if (!project) return;
 
       await axios.patch(
-        `http://localhost:8000/api/v1/admin/projects/${id}/archive`,
+        `https://my-portfolio-zp97.onrender.com/api/v1/admin/projects/${id}/archive`,
         { isArchived: !project.isArchived },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -278,7 +278,7 @@ const AllProjects = () => {
     setError("");
     try {
       const token = localStorage.getItem("adminToken");
-      await axios.delete(`http://localhost:8000/api/v1/admin/projects/${id}`, {
+      await axios.delete(`https://my-portfolio-zp97.onrender.com/api/v1/admin/projects/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 

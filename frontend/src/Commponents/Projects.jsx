@@ -47,13 +47,13 @@ const Projects = () => {
 
     try {
       const { data: res } = await axios.get(
-        "http://localhost:8000/api/v1/public/projects",
+        "https://my-portfolio-zp97.onrender.com/api/v1/public/projects",
       );
 
-      /* 1️⃣ pull list, default to [] */
+      /* 1 pull list, default to [] */
       const raw = res?.data?.projects ?? [];
 
-      /* 2️⃣ convert tech objects → strings, ensure category is a string */
+      /* 2 convert tech objects → strings, ensure category is a string */
       const cleaned = raw.map((p) => ({
         ...p,
         category:

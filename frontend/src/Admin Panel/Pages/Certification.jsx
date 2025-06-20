@@ -24,7 +24,7 @@ export default function CertificationAdmin() {
 
   const load = async () => {
     try {
-      const { data } = await axios.get("http://localhost:8000/api/v1/public/certifications", authConfig());
+      const { data } = await axios.get("https://my-portfolio-zp97.onrender.com/api/v1/public/certifications", authConfig());
       console.log(data)
       const list = Array.isArray(data?.data) ? data.data : data.certifications ?? [];
       setRecords(list);
@@ -65,9 +65,9 @@ export default function CertificationAdmin() {
 
     try {
       if (editingId) {
-        await axios.patch(`http://localhost:8000/api/v1/admin/certifications/${editingId}`, form, authConfig());
+        await axios.patch(`https://my-portfolio-zp97.onrender.com/api/v1/admin/certifications/${editingId}`, form, authConfig());
       } else {
-        await axios.post("http://localhost:8000/api/v1/admin/certifications", form, authConfig());
+        await axios.post("https://my-portfolio-zp97.onrender.com/api/v1/admin/certifications", form, authConfig());
       }
       await load();
       closeModal();
@@ -81,7 +81,7 @@ export default function CertificationAdmin() {
   const del = async (id) => {
     if (!window.confirm("Delete this certification?")) return;
     try {
-      await axios.delete(`http://localhost:8000/api/v1/admin/certifications/${id}`, authConfig());
+      await axios.delete(`https://my-portfolio-zp97.onrender.com/api/v1/admin/certifications/${id}`, authConfig());
       setRecords((prev) => prev.filter((c) => c._id !== id));
     } catch (err) {
       setError(err.response?.data?.message || "Failed to delete certification.");

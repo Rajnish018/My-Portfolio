@@ -35,7 +35,7 @@ export default function Account() {
 
     try {
       await axios.post(
-        "http://localhost:8000/api/v1/admin/change-password",
+        "https://my-portfolio-zp97.onrender.com/api/v1/admin/change-password",
         {
           oldPassword: passwords.current,
           newPassword: passwords.next,
