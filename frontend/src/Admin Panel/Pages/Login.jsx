@@ -4,6 +4,7 @@ import axios from "axios";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import { motion } from "framer-motion";
 import LoadingPage from "../commpenets/LoadingPage.jsx";
+import { response } from "express";
 
 const AdminLogin = () => {
   const [form, setForm] = useState({ email: "", password: "" });
@@ -68,8 +69,13 @@ const AdminLogin = () => {
         form,
         { withCredentials: true }
       );
+        console.log(response)
+
       
       const { token, profile } = response.data.data;
+
+      console.log(token)
+
       
       localStorage.setItem("adminToken", token);
       localStorage.setItem("adminProfile", JSON.stringify(profile));
