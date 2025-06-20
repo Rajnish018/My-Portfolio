@@ -18,6 +18,10 @@ app.use(cors({
   credentials: true,
 }));
 
+app.get("/api/health", (req, res) => {
+  res.status(200).json({ message: "Backend is live!" });
+});
+
 // json data
 app.use(express.json());
 
