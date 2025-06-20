@@ -23,15 +23,6 @@ app.use(
   })
 );
 
-app.use((req, res, next) => {
-  console.log("▶", req.method, req.url, "CT:", req.headers["content-type"]);
-  next();
-});
-
-app.get("/test", (req, res) => {
-  res.json({ message: "✅ Public route working!" });
-});
-
 // store file data
 
 app.use("/uploads", express.static(uploadDir));
