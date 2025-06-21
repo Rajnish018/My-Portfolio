@@ -3,26 +3,56 @@ import { Skill } from "../model/skill.model.js";
 import { ApiError } from "../services/ApiError.js";
 import { ApiRespose } from "../services/ApiResponse.js";
 
+import { cloudinary } from "../utils/cloudinary.js";
+
+import { promises as fs } from "fs";
+
+
 /* ─────────────── CREATE ─────────────── */
 import { Types } from "mongoose";
 
 // controllers/project.controller.js
-export const uploadProjectImage = async (req, res) => {
+export const uploadProjectImage = async (req, res, next) => {
   try {
-    if (!req.file) {
+    if (!req.admin?._id) {
+      return res.status(401).json(
+        new ApiRespose(401, null, "Unauthorized")
+      );
+    }
+
+    if (!req.file?.path) {
       throw new ApiError(400, "Image file is required");
     }
 
-    const imageUrl = `${req.protocol}://${req.get("host")}/uploads/${req.file.filename}`;
+    // 👇 Optional: use timestamp-based public_id for uniqueness
+    const imagePublicId = `project_${Date.now()}`;
 
+    // ⬆️ Upload to Cloudinary
+    const upload = await cloudinary.uploader.upload(req.file.path, {
+      folder: "project_images",
+      public_id: imagePublicId,
+      overwrite: true,
+      transformation: [
+        { width: 1200, crop: "limit" },
+        { quality: "auto" },
+        { fetch_format: "auto" },
+      ],
+    });
+
+    // 🧹 Remove local temp file
+    await fs.unlink(req.file.path).catch(() => {});
+
+    // ✅ Return secure URL and public_id
     return res.status(200).json(
-      new ApiRespose(200, { url: imageUrl }, "Project image uploaded successfully")
+      new ApiRespose(200, {
+        url: upload.secure_url,
+        public_id: upload.public_id,
+      }, "Project image uploaded successfully")
     );
   } catch (error) {
-    throw new ApiError(500, "Project image upload failed", error);
+    next(new ApiError(500, "Project image upload failed", error));
   }
 };
-
 export const createProject = async (req, res) => {
   try {
     /* ───────────── 1. destructure body ───────────── */

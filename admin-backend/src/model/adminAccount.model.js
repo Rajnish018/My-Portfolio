@@ -18,6 +18,9 @@ const adminAccountSchema= new mongoose.Schema({
     avatar:{
         type:String,
     },
+    avatarPublicId:{
+        type:String,
+    }
 },{timestamps:true})
 
 

@@ -70,7 +70,7 @@ const AdminLogin = () => {
       console.log("form going out:", form);   // <‑‑ should show email & password
 
       const response = await axios.post(
-        `http://localhost:8000/api/v1/public/login`,
+        `${BASE_URL}/public/login`,
         form,
         { withCredentials: true }
       );

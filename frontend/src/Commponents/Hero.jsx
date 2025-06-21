@@ -23,9 +23,13 @@ const Hero = () => {
   useEffect(() => {
     const fetchImage = async () => {
       try {
+
         const res = await fetch(`${BASE_URL}/public/profile`);
         const data = await res.json();
+        console.log("this check of res",res)
+        console.log("data of profile",data)
         setProfileImage(data?.data?.avatar || "/assets/default-avatar.svg");
+        console.log(data.data.avatar)
         setUserName(data?.data?.name   || "Rajnish Kumar");
       } catch (error) {
         console.error("Failed to fetch image:", error);

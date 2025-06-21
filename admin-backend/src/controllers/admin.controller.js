@@ -3,6 +3,8 @@ import jwt from "jsonwebtoken";
 import { ApiError } from "../services/ApiError.js";
 import { ApiRespose } from "../services/ApiResponse.js";
 import {AdminAccount as Admin } from "../model/adminAccount.model.js";
+import { cloudinary } from "../utils/cloudinary.js";
+import fs from "fs/promises";
 
 const getAdminProfile = async (req, res) => {
   try {
@@ -205,49 +207,56 @@ const loginAdmin = async (req, res) => {
     });
   }
 };
-
 const uploadAdminAvatar = async (req, res) => {
   try {
-    if (!req.admin || !req.admin._id) {
-    return res.status(401).json(
-      new ApiError(401, "Unauthorized: Admin not authenticated")
-    );
-  }
-    if (!req.file) {
-      return res
-        .status(400)
-        .json(new ApiError(400, "Avatar file is required"));
+    if (!req.admin?._id) {
+      return res.status(401).json(new ApiError(401, "Unauthorized"));
+    }
+    if (!req.file?.path) {
+      return res.status(400).json(new ApiError(400, "Avatar file is required"));
     }
 
-    const absoluteUrl = `${req.protocol}://${req.get("host")}/uploads/${req.file.filename}`;
+    /* 1️⃣ Delete old avatar (if any) */
+    const avatarPublicId = `admin_${req.admin._id}`;
+    await cloudinary.uploader
+      .destroy(avatarPublicId, { invalidate: true })
+      .catch(() => {}); // ignore "not found" errors
 
+    /* 2️⃣ Upload new one */
+    const upload = await cloudinary.uploader.upload(req.file.path, {
+      folder: "admin_avatars",
+      public_id: avatarPublicId, // same id -> keeps URL stable
+      overwrite: true,
+      transformation: [
+        { width: 400, height: 400, crop: "thumb", gravity: "face" },
+        { quality: "auto" },
+        { fetch_format: "auto" },
+      ],
+    });
+    await fs.unlink(req.file.path).catch(() => {}); // clean temp file
+
+    /* 3️⃣ Save in DB */
     const updatedAdmin = await Admin.findByIdAndUpdate(
       req.admin._id,
-      { avatar: absoluteUrl },
+      { avatar: upload.secure_url },
       { new: true }
     ).select("-password");
 
-    if (!updatedAdmin) {
-      return res
-        .status(404)
-        .json(new ApiError(404, "Admin not found"));
-    }
+    if (!updatedAdmin)
+      return res.status(404).json(new ApiError(404, "Admin not found"));
 
     return res.status(200).json(
       new ApiRespose(
         200,
-        { url: absoluteUrl, profile: updatedAdmin },
+        { url: upload.secure_url, profile: updatedAdmin },
         "Avatar uploaded successfully"
       )
     );
-  } catch (error) {
-    console.error("Avatar upload error:", error);
-    return res
-      .status(500)
-      .json(new ApiError(500, "Failed to upload avatar"));
+  } catch (err) {
+    console.error("Avatar upload error:", err);
+    return res.status(500).json(new ApiError(500, "Avatar upload failed"));
   }
 };
-
 export {
   getAdminProfile,
   updateAdminProfile,

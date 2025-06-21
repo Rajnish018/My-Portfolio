@@ -4,10 +4,6 @@ import { uploadDir } from "./middlewares/multer.middleware.js";
 
 const app = express();
 
-const allowedOrigins = [
-  "http://localhost:5173",
-  "https://my-portfolio-h5856vtu8-rajnish-kumars-projects-9b954ac3.vercel.app"
-];
 app.use(
   cors({
     origin: (origin, callback) => {

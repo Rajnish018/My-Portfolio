@@ -14,6 +14,10 @@ import {
 import { FaXTwitter } from "react-icons/fa6";
 import axios from "axios";
 
+const BASE_URL=import.meta.env.VITE_API_BASE_URL
+
+
+
 const Contact = () => {
   const formRef = useRef();
   const [formData, setFormData] = useState({
@@ -43,10 +47,11 @@ const Contact = () => {
   setIsSubmitting(true);
 
   try {
-    await axios.post("https://my-portfolio-zp97.onrender.com/api/v1/public/contacts", {
+      const res=await axios.post(`${BASE_URL}/public/contacts`, {
       ...formData,                    // name, email, message
       subject: "Portfolio Feedback",
     });
+    console.log(res)
 
     setSubmitStatus("success");       // show green banner
     setFormData({ name: "", email: "", message: "" });
