@@ -2,6 +2,9 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { motion } from "framer-motion";
 
+const BASE_URL=import.meta.env.VITE_API_BASE_URL
+
+
 const FeaturedProjects = () => {
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -9,11 +12,13 @@ const FeaturedProjects = () => {
   useEffect(() => {
     (async () => {
       try {
+        console.log("hiii")
         const token = localStorage.getItem("adminToken");
         const { data } = await axios.get(
-          "https://my-portfolio-zp97.onrender.com/api/v1/admin/projects/archived-featured",
+          `${BASE_URL}/admin/projects/archived-featured`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
+        console.log(data)
         setProjects(Array.isArray(data.featuredProjects) ? data.featuredProjects : []);
       } catch (err) {
         console.error("Failed to fetch featured projects:", err);

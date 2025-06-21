@@ -4,19 +4,22 @@ import { uploadDir } from "./middlewares/multer.middleware.js";
 
 const app = express();
 
-
-// app.use(
-  // cors({
-    // origin: process.env.CORS_ORIGIN,
-    // credentials: true,
-  // })
-// );
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://rajnish-portfolio-018.vercel.app"
+];
 
 app.use(cors({
-  origin: "*", // or: "https://rajnish-portfolio-018.vercel.app"
-  methods: ["GET", "POST", "PUT", "DELETE"],
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
   credentials: true,
 }));
+
 
 app.get("/api/health", (req, res) => {
   res.status(200).json({ message: "Backend is live!" });

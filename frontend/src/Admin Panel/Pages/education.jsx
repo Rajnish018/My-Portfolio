@@ -3,6 +3,9 @@ import axios from "axios";
 import { motion } from "framer-motion";
 import { FiEdit, FiTrash2, FiX, FiSave, FiPlus } from "react-icons/fi";
 
+const BASE_URL=import.meta.env.VITE_API_BASE_URL
+
+
 export default function EducationAdmin() {
   // ─────────────── state
   const [records, setRecords] = useState([]);
@@ -23,7 +26,7 @@ export default function EducationAdmin() {
       try {
         const token = localStorage.getItem("adminToken");
         const { data } = await axios.get(
-          "https://my-portfolio-zp97.onrender.com/api/v1/admin/education",
+          `${BASE_URL}/admin/education`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -74,20 +77,20 @@ export default function EducationAdmin() {
     try {
       if (editingId) {
         await axios.patch(
-          `https://my-portfolio-zp97.onrender.com/api/v1/admin/education/${editingId}`,
+          `${BASE_URL}/admin/education/${editingId}`,
           form,
           config
         );
       } else {
         await axios.post(
-          "https://my-portfolio-zp97.onrender.com/api/v1/admin/education",
+          `${BASE_URL}/admin/education`,
           form,
           config
         );
       }
 
       const { data } = await axios.get(
-        "https://my-portfolio-zp97.onrender.com/api/v1/admin/education", 
+        `${BASE_URL}/admin/education`, 
         config
       );
       setRecords(Array.isArray(data?.data) ? data.data : data.educations ?? []);
@@ -104,7 +107,7 @@ export default function EducationAdmin() {
     if (!window.confirm("Delete this education entry?")) return;
     const token = localStorage.getItem("adminToken");
     try {
-      await axios.delete(`https://my-portfolio-zp97.onrender.com/api/v1/admin/education/${id}`, {
+      await axios.delete(`${BASE_URL}/admin/education/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setRecords((prev) => prev.filter((r) => r._id !== id));

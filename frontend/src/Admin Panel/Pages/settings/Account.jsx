@@ -3,6 +3,9 @@ import axios from "axios";
 import { motion } from "framer-motion";
 import { FiSave, FiEye, FiEyeOff, FiLock } from "react-icons/fi";
 
+const BASE_URL=import.meta.env.VITE_API_BASE_URL
+
+
 export default function Account() {
   const [passwords, setPw] = useState({ current: "", next: "", confirm: "" });
   const [showPassword, setShowPassword] = useState({
@@ -35,7 +38,7 @@ export default function Account() {
 
     try {
       await axios.post(
-        "https://my-portfolio-zp97.onrender.com/api/v1/admin/change-password",
+        `${BASE_URL}/admin/change-password"`,
         {
           oldPassword: passwords.current,
           newPassword: passwords.next,

@@ -18,8 +18,11 @@ import {
 } from "react-icons/fi";
 import { FaSort } from "react-icons/fa";
 
+const BASE_URL=import.meta.env.VITE_API_BASE_URL
+
+
 // Fallback image if a project has no image URL
-import PlaceholderImg from "../assets/moorapank.jpg";
+// import PlaceholderImg from "../assets/moorapank.jpg";
 
 const Projects = () => {
   /* ───────────────────────────────
@@ -47,7 +50,7 @@ const Projects = () => {
 
     try {
       const { data: res } = await axios.get(
-        `${import.meta.env.VITE_API_BASE_URL}/api/v1/public/projects`
+        `${BASE_URL}/public/projects`
       );
   
       /* 1 pull list, default to [] */

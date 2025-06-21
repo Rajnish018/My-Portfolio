@@ -79,7 +79,7 @@ const About = () => {
 
       try {
         const res = await axios.get(
-           `${import.meta.env.VITE_API_BASE_URL}/api/v1/public/skills`
+           `${import.meta.env.VITE_API_BASE_URL}/public/skills`
         );
 
         console.log("response from fetch skill",res)
@@ -123,7 +123,7 @@ const About = () => {
       setLoading(true);
       try {
         const res = await axios.get(
-           `${import.meta.env.VITE_API_BASE_URL}/api/v1/public/education `
+           `${import.meta.env.VITE_API_BASE_URL}/public/education `
         );
         const educationRaw = res.data?.data ?? [];
 
@@ -156,7 +156,7 @@ const About = () => {
 
       try {
         const res = await axios.get(
-          `${import.meta.env.VITE_API_BASE_URL}/api/v1/public/certifications`,
+          `${import.meta.env.VITE_API_BASE_URL}/public/certifications`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
 

@@ -24,8 +24,8 @@ export default function Profile() {
   const fileInputRef = useRef(null);
   const copyTimeoutRef = useRef(null);
 
-  const API_BASE_URL =
-    import.meta.env.VITE_APP_API_BASE_URL || "https://my-portfolio-zp97.onrender.com";
+const BASE_URL=import.meta.env.VITE_API_BASE_URL
+
 
   const config = (isForm = false) => {
     const token = localStorage.getItem("adminToken");
@@ -47,7 +47,7 @@ export default function Profile() {
   const getAbsoluteUrl = (url) => {
     if (!url) return "";
     if (url.startsWith("http")) return url;
-    return `${API_BASE_URL}/${url.replace(/^\/+/, "")}`;
+    return `${BASE_URL}/${url.replace(/^\/+/, "")}`;
   };
 
   useEffect(() => {
@@ -56,7 +56,7 @@ export default function Profile() {
       setError("");
       try {
         const { data } = await axios.get(
-          `${API_BASE_URL}/api/v1/public/profile`,
+          `${BASE_URL}/public/profile`,
           config()
         );
 
@@ -109,7 +109,7 @@ export default function Profile() {
     return () => {
       if (copyTimeoutRef.current) clearTimeout(copyTimeoutRef.current);
     };
-  }, [API_BASE_URL]);
+  }, [BASE_URL]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -137,7 +137,7 @@ export default function Profile() {
       formData.append("avatar", file);
 
       const response = await axios.post(
-        `${API_BASE_URL}/api/v1/admin/upload-avatar`,
+        `${BASE_URL}/admin/upload-avatar`,
         formData,
         config(true)
       );

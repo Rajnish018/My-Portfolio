@@ -8,6 +8,10 @@ import {
   FiArrowRight,
 } from "react-icons/fi";
 
+const BASE_URL=import.meta.env.VITE_API_BASE_URL
+
+
+
 const Hero = () => {
   const [currentText, setCurrentText] = useState("");
   const [currentRoleIndex, setCurrentRoleIndex] = useState(0);
@@ -19,7 +23,7 @@ const Hero = () => {
   useEffect(() => {
     const fetchImage = async () => {
       try {
-        const res = await fetch("https://my-portfolio-zp97.onrender.com/api/v1/public/profile");
+        const res = await fetch(`${BASE_URL}/public/profile`);
         const data = await res.json();
         setProfileImage(data?.data?.avatar || "/assets/default-avatar.svg");
         setUserName(data?.data?.name   || "Rajnish Kumar");

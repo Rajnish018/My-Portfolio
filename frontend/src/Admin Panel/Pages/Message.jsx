@@ -2,6 +2,10 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { FiCheckCircle, FiTrash2, FiX, FiMail } from "react-icons/fi";
 
+
+const BASE_URL=import.meta.env.VITE_API_BASE_URL
+
+
 function AdminMessages() {
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -12,7 +16,7 @@ function AdminMessages() {
   const fetchMessages = async () => {
     try {
       const token = localStorage.getItem("adminToken");
-      const { data } = await axios.get("https://my-portfolio-zp97.onrender.com/api/v1/admin/messages", {
+      const { data } = await axios.get(`${BASE_URL}/admin/messages`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setMessages(data?.data?.messages ?? []);
@@ -32,7 +36,7 @@ function AdminMessages() {
 
   const markAsRead = async (id) => {
     try { 
-      await api("patch", `https://my-portfolio-zp97.onrender.com/api/v1/admin/messages/${id}/read`); 
+      await api("patch", `${BASE_URL}/admin/messages/${id}/read`); 
       setMessages((prev) => prev.map((m) => (m._id === id ? { ...m, isRead: true } : m)));
     } catch (err) { 
       console.error(err); 
@@ -41,7 +45,7 @@ function AdminMessages() {
 
   const markUnread = async (id) => {
     try { 
-      await api("patch", `https://my-portfolio-zp97.onrender.com/api/v1/admin/messages/${id}/unread`); 
+      await api("patch", `${BASE_URL}/admin/messages/${id}/unread`); 
       setMessages((prev) => prev.map((m) => (m._id === id ? { ...m, isRead: false } : m)));
     } catch (err) { 
       console.error(err); 
@@ -50,7 +54,7 @@ function AdminMessages() {
 
   const deleteMessage = async (id) => {
     try { 
-      await api("delete", `https://my-portfolio-zp97.onrender.com/api/v1/admin/messages/${id}`); 
+      await api("delete", `${BASE_URL}/admin/messages/${id}`); 
       setMessages((prev) => prev.filter((m) => m._id !== id));
       if (selected?._id === id) setShowPane(false);
     } catch (err) { 

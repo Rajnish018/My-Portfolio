@@ -126,7 +126,10 @@ const getDashboard = async (req, res) => {
 
 const loginAdmin = async (req, res) => {
   try {
+    
     const { email, password } = req.body;
+    
+    console.log(req.body)
     
     // Validate input
     if (!email || !password) {
@@ -138,7 +141,7 @@ const loginAdmin = async (req, res) => {
     }
 
     // Case-insensitive email search
-    console.log(await Admin.findOne({ email: email.toLowerCase() }))
+    // console.log(await Admin.findOne({ email: email.toLowerCase() }))
     const admin=await Admin.findOne({ email: email.toLowerCase() })
     if (!admin) {
       return res.status(401).json({

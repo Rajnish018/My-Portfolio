@@ -3,7 +3,8 @@ import axios from "axios";
 import { motion } from "framer-motion";
 import { FiEdit, FiTrash2, FiPlus, FiSave, FiX } from "react-icons/fi";
 
-const BASE = "http://localhost:8000/api/v1/public/certifications";
+const BASE_URL=import.meta.env.VITE_API_BASE_URL
+
 
 export default function CertificationAdmin() {
   // ─────────────── state
@@ -24,7 +25,7 @@ export default function CertificationAdmin() {
 
   const load = async () => {
     try {
-      const { data } = await axios.get("https://my-portfolio-zp97.onrender.com/api/v1/public/certifications", authConfig());
+      const { data } = await axios.get(`${BASE_URL}/public/certifications`, authConfig());
       console.log(data)
       const list = Array.isArray(data?.data) ? data.data : data.certifications ?? [];
       setRecords(list);
@@ -65,9 +66,9 @@ export default function CertificationAdmin() {
 
     try {
       if (editingId) {
-        await axios.patch(`https://my-portfolio-zp97.onrender.com/api/v1/admin/certifications/${editingId}`, form, authConfig());
+        await axios.patch(`${BASE_URL}admin/certifications/${editingId}`, form, authConfig());
       } else {
-        await axios.post("https://my-portfolio-zp97.onrender.com/api/v1/admin/certifications", form, authConfig());
+        await axios.post( `${BASE_URL}/admin/certifications`, form, authConfig());
       }
       await load();
       closeModal();
@@ -81,7 +82,7 @@ export default function CertificationAdmin() {
   const del = async (id) => {
     if (!window.confirm("Delete this certification?")) return;
     try {
-      await axios.delete(`https://my-portfolio-zp97.onrender.com/api/v1/admin/certifications/${id}`, authConfig());
+      await axios.delete(`${BASE_URL}/admin/certifications/${id}`, authConfig());
       setRecords((prev) => prev.filter((c) => c._id !== id));
     } catch (err) {
       setError(err.response?.data?.message || "Failed to delete certification.");

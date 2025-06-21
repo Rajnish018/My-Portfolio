@@ -4,7 +4,9 @@ import axios from "axios";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import { motion } from "framer-motion";
 import LoadingPage from "../commpenets/LoadingPage.jsx";
-import { response } from "express";
+
+const BASE_URL=import.meta.env.VITE_API_BASE_URL
+
 
 const AdminLogin = () => {
   const [form, setForm] = useState({ email: "", password: "" });
@@ -62,13 +64,17 @@ const AdminLogin = () => {
 
     setIsSubmitting(true);
     setLoginError("");
+    console.log("hiii")
 
     try {
+      console.log("form going out:", form);   // <‑‑ should show email & password
+
       const response = await axios.post(
-        "https://my-portfolio-zp97.onrender.com/api/v1/public/login",
+        `http://localhost:8000/api/v1/public/login`,
         form,
         { withCredentials: true }
       );
+      
         console.log(response)
 
       

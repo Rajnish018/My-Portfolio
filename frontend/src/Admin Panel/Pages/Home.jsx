@@ -17,6 +17,11 @@ import { Card, CardContent } from "../commpenets/Card.jsx";
 import { Button } from "../commpenets/Button.jsx";
 import { motion } from "framer-motion";
 
+const BASE_URL=import.meta.env.VITE_API_BASE_URL
+
+
+
+
 const emptySummary = {
   totalProjects: 0,
   totalSkills: 0,
@@ -47,7 +52,7 @@ const DashboardHome = () => {
         }
 
         const { data } = await axios.get(
-          "https://my-portfolio-zp97.onrender.com/api/v1/admin/dashboard/summary",
+          `${BASE_URL}/admin/dashboard/summary`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
         

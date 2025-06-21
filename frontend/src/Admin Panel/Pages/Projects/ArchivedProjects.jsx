@@ -2,6 +2,10 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { motion } from "framer-motion";
 
+const BASE_URL=import.meta.env.VITE_API_BASE_URL
+
+
+
 const ArchivedProjects = () => {
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -10,8 +14,7 @@ const ArchivedProjects = () => {
     (async () => {
       try {
         const token = localStorage.getItem("adminToken");
-        const res = await axios.get(
-          "https://my-portfolio-zp97.onrender.com/api/v1/admin/projects/archived-featured",
+        const res = await axios.get(`${BASE_URL}/admin/projects/archived-featured`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
         setProjects(Array.isArray(res.data.archivedProjects) ? res.data.archivedProjects : []);

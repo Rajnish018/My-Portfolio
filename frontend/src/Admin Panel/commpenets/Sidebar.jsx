@@ -24,6 +24,10 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 import "./Sidebar.css";
 
+
+const BASE_URL=import.meta.env.VITE_API_BASE_URL
+
+
 const Sidebar = ({ collapsed, setCollapsed, isMobile }) => {
   const [adminInfo, setAdminInfo] = useState({ name: "", email: "" });
   const [reload, setReload] = useState(0);
@@ -41,7 +45,7 @@ useEffect(() => {
   const fetchProfile = async () => {
     try {
       const { data } = await axios.get(
-        "https://my-portfolio-zp97.onrender.com/api/v1/public/profile"
+        `${BASE_URL}/public/profile`,
       );
       setAdminInfo(data.data);
     } catch (err) {
@@ -65,8 +69,7 @@ const saveProfile = async () => {
       try {
         const token = localStorage.getItem("adminToken");
         console.log(token)
-        const res = await axios.get(
-          "https://my-portfolio-zp97.onrender.com/api/v1/admin/messages/unread-count",
+        const res = await axios.get(`${BASE_URL}/admin/messages/unread-count`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
         console.log(res)
