@@ -8,17 +8,23 @@ const allowedOrigins = [
   "http://localhost:5173",
   "https://my-portfolio-h5856vtu8-rajnish-kumars-projects-9b954ac3.vercel.app"
 ];
-
-app.use(cors({
-  origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error("Not allowed by CORS"));
-    }
-  },
-  credentials: true,
-}));
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      if (
+        !origin ||                                   // requests from Postman / curl
+        origin.endsWith(".vercel.app") ||            // any Vercel deploy
+        origin === "http://localhost:5173"           // local dev
+      ) {
+        callback(null, true);
+      } else {
+        console.error("CORS blocked:", origin);
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true,
+  })
+);
 
 
 app.get("/api/health", (req, res) => {
