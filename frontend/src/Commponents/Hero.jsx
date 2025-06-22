@@ -8,9 +8,7 @@ import {
   FiArrowRight,
 } from "react-icons/fi";
 
-const BASE_URL=import.meta.env.VITE_API_BASE_URL
-
-
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const Hero = () => {
   const [currentText, setCurrentText] = useState("");
@@ -23,14 +21,10 @@ const Hero = () => {
   useEffect(() => {
     const fetchImage = async () => {
       try {
-
         const res = await fetch(`${BASE_URL}/public/profile`);
         const data = await res.json();
-        console.log("this check of res",res)
-        console.log("data of profile",data)
         setProfileImage(data?.data?.avatar || "/assets/default-avatar.svg");
-        console.log(data.data.avatar)
-        setUserName(data?.data?.name   || "Rajnish Kumar");
+        setUserName(data?.data?.name || "Rajnish Kumar");
       } catch (error) {
         console.error("Failed to fetch image:", error);
         setProfileImage("/assets/default-avatar.svg");
@@ -91,7 +85,7 @@ const Hero = () => {
       className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-900 to-purple-800 text-white pt-20"
     >
       <div className="container mx-auto px-6 md:px-12">
-        <div className="flex flex-col-reverse md:flex-row items-center justify-between gap-12">
+        <div className="flex flex-col-reverse md:flex-row items-center justify-center md:justify-between gap-8 md:gap-12">
           {/* Text Content */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -101,7 +95,7 @@ const Hero = () => {
           >
             {/* Name */}
             <motion.h1
-              className="text-4xl md:text-6xl font-bold"
+              className="text-3xl sm:text-4xl md:text-6xl font-bold"
               whileHover={{ scale: 1.02 }}
             >
               Hi, I'm
@@ -109,7 +103,7 @@ const Hero = () => {
             </motion.h1>
 
             {/* Typing Roles */}
-            <div className="min-h-[120px] md:min-h-[140px] flex flex-col items-center md:items-start justify-center">
+            <div className="min-h-[100px] md:min-h-[140px] flex flex-col items-center md:items-start justify-center text-center md:text-left">
               <motion.div
                 key={currentRoleIndex}
                 initial={{ opacity: 0 }}
@@ -118,9 +112,7 @@ const Hero = () => {
                 className="flex items-center gap-2 my-1"
               >
                 {currentRole.icon}
-                <h2
-                  className={`text-xl md:text-2xl font-medium ${currentRole.color}`}
-                >
+                <h2 className={`text-lg sm:text-xl md:text-2xl font-medium ${currentRole.color}`}>
                   {currentText}
                   <span className="animate-pulse">|</span>
                 </h2>
@@ -129,7 +121,7 @@ const Hero = () => {
 
             {/* Tagline */}
             <motion.p
-              className="text-lg md:text-xl mb-12 text-gray-300"
+              className="text-base sm:text-lg md:text-xl mb-8 text-gray-300"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.6, duration: 0.6 }}
@@ -139,7 +131,7 @@ const Hero = () => {
             </motion.p>
 
             {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row justify-center md:justify-start gap-4">
+            <div className="flex flex-col sm:flex-row items-center justify-center md:justify-start gap-4">
               <motion.a
                 href="/resume.pdf"
                 download="Rajnish_Kumar_Resume.pdf"
@@ -176,7 +168,7 @@ const Hero = () => {
             transition={{ delay: 0.8, duration: 0.5 }}
             className="flex-shrink-0"
           >
-            <div className="relative w-56 h-56 md:w-72 md:h-72 rounded-full overflow-hidden border-4 border-indigo-300 shadow-xl shadow-indigo-500/30">
+            <div className="relative w-48 h-48 sm:w-56 sm:h-56 md:w-72 md:h-72 rounded-full overflow-hidden border-4 border-indigo-300 shadow-xl shadow-indigo-500/30 mx-auto md:mx-0">
               <motion.img
                 src={profileImage}
                 alt="Rajnish Kumar"
