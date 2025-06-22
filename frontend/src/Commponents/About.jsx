@@ -82,7 +82,7 @@ const About = () => {
            `${import.meta.env.VITE_API_BASE_URL}/public/skills`
         );
 
-        console.log("response from fetch skill",res)
+        // console.log("response from fetch skill",res)
 
         const skillsRaw = res.data?.data?.skills || [];
 
@@ -127,7 +127,7 @@ const About = () => {
         );
         const educationRaw = res.data?.data ?? [];
 
-        console.log("Fetched education data:", educationRaw);
+        // console.log("Fetched education data:", educationRaw);
 
         const processed = educationRaw.map((edu) => ({
           degree: edu.degree || "Unknown Degree",
@@ -146,6 +146,27 @@ const About = () => {
     };
     fetchEducation();
   }, []);
+
+  // Fetch projects data 
+  useEffect(()=>{
+    const fetchProject=async()=>{
+      setLoading(true)
+      const token=localStorage.getItem("adminToken")
+
+      try{
+        const res=await axios.get(`${import.meta.env.VITE_API_BASE_URL}/public/projects`)
+        
+
+      }catch(error){
+        setError("Failed to load.")
+
+      }
+      finally{
+        setLoading(false)
+      }
+
+    }
+  })
 
   // Fetch certifications data
 
@@ -169,7 +190,7 @@ const About = () => {
         setCertifications(processed);
         setError(null);
       } catch (error) {
-        console.error("Error fetching certifications:", error);
+        // console.error("Error fetching certifications:", error);
         setError("Failed to load certifications. Please try again later.");
       } finally {
         setLoading(false);

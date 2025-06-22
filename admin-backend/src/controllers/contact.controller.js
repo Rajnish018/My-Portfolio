@@ -17,7 +17,7 @@ const createContact = async (req, res, next) => {
   ) {
     return res.status(400).json({ error: "Invalid input types" });
   }
-  console.log("Contact form submission:", req.body);
+  // console.log("Contact form submission:", req.body);
 
   try {
     // 1 Save to DB
@@ -35,11 +35,11 @@ const createContact = async (req, res, next) => {
       }</p>
       <p>🕐 ${new Date(contact.createdAt).toLocaleString("en-IN")}</p>
     `;
-    console.log("contact_name:", contact.name);
-    console.log("contact_email:", contact.email);
-    console.log("contact_subject:", contact.subject);
-    console.log("contact_message:", contact.message);
-    console.log("createdAt:", contact.createdAt);
+    // console.log("contact_name:", contact.name);
+    // console.log("contact_email:", contact.email);
+    // console.log("contact_subject:", contact.subject);
+    // console.log("contact_message:", contact.message);
+    // console.log("createdAt:", contact.createdAt);
 
     console.log("Admin notification template:", tpl);
     console.log("Admin email list:", adminList);

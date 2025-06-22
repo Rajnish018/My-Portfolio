@@ -55,7 +55,7 @@ const Projects = () => {
   
       /* 1 pull list, default to [] */
       const raw = res?.data?.projects ?? [];
-      console.log(raw)
+      // console.log(raw)
 
       /* 2 convert tech objects → strings, ensure category is a string */
       const cleaned = raw.map((p) => ({

@@ -152,7 +152,7 @@ export default function SkillsAdmin() {
     setIsDeleting(true);
     try {
       const token = localStorage.getItem("adminToken");
-      console.log("handle to delete",token)
+      // console.log("handle to delete",token)
       await axios.delete(`${BASE_URL}/admin/skills/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });

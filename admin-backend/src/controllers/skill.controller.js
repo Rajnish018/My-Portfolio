@@ -7,7 +7,7 @@ import {Skill} from '../model/skill.model.js';
 const createSkill = async (req, res) => {
   try {
     const { name, icon, items, color } = req.body;
-    console.log('createSkill request body:', req.body);
+    // console.log('createSkill request body:', req.body);
 
     /* ───── 1. Guard clauses ───── */
     if (!name || !icon || !items || !color) {
@@ -73,7 +73,7 @@ const createSkill = async (req, res) => {
 const deleteSkill = async (req, res) => {
   try {
     const { id } = req.params;
-    console.log('deleteSkill request params:', req.params);
+    // console.log('deleteSkill request params:', req.params);
 
     /* ───── 1. Basic validation ───── */
     if (!id?.match(/^[0-9a-fA-F]{24}$/)) {
@@ -108,7 +108,7 @@ const deleteSkill = async (req, res) => {
 const updateSkill = async (req, res) => {
   try {
     const { id } = req.params;
-    console.log('updateSkill request params:', req.params);
+    // console.log('updateSkill request params:', req.params);
     const { name, icon, items, color } = req.body;
 
     console.log('updateSkill request body:', req.body);
@@ -252,7 +252,7 @@ const getAllSkill = async (req, res) => {
         .lean(),
       Skill.countDocuments(),
     ]);
-console.log("GET /skills called");
+// console.log("GET /skills called");
 
     // ─── 3. Return response ────────────────────────────────────────
     return res.status(200).json(
@@ -274,10 +274,6 @@ console.log("GET /skills called");
     );
   }
 };
-
-
-
-
 
 export {
     createSkill,

@@ -27,7 +27,7 @@ const Hero = () => {
         setUserName(data?.data?.name || "Rajnish Kumar");
       } catch (error) {
         console.error("Failed to fetch image:", error);
-        setProfileImage("/assets/default-avatar.svg");
+        setProfileImage("https://png.pngtree.com/png-clipart/20230927/original/pngtree-man-avatar-image-for-profile-png-image_13001882.png");
       }
     };
 

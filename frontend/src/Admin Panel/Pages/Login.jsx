@@ -64,10 +64,10 @@ const AdminLogin = () => {
 
     setIsSubmitting(true);
     setLoginError("");
-    console.log("hiii")
+    // console.log("hiii")
 
     try {
-      console.log("form going out:", form);   // <‑‑ should show email & password
+      // console.log("form going out:", form);   // <‑‑ should show email & password
 
       const response = await axios.post(
         `${BASE_URL}/public/login`,
@@ -75,12 +75,12 @@ const AdminLogin = () => {
         { withCredentials: true }
       );
       
-        console.log(response)
+        // console.log(response)
 
       
       const { token, profile } = response.data.data;
 
-      console.log(token)
+      // console.log(token)
 
       
       localStorage.setItem("adminToken", token);

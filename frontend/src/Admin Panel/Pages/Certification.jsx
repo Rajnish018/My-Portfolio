@@ -26,7 +26,7 @@ export default function CertificationAdmin() {
   const load = async () => {
     try {
       const { data } = await axios.get(`${BASE_URL}/public/certifications`, authConfig());
-      console.log(data)
+      // console.log(data)
       const list = Array.isArray(data?.data) ? data.data : data.certifications ?? [];
       setRecords(list);
     } catch (err) {

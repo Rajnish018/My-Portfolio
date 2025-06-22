@@ -14,9 +14,7 @@ import {
 import { FaXTwitter } from "react-icons/fa6";
 import axios from "axios";
 
-const BASE_URL=import.meta.env.VITE_API_BASE_URL
-
-
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const Contact = () => {
   const formRef = useRef();
@@ -43,29 +41,27 @@ const Contact = () => {
     setTimeout(() => setCopied(false), 1500);
   };
   const handleSubmit = async (e) => {
-  e.preventDefault();
-  setIsSubmitting(true);
+    e.preventDefault();
+    setIsSubmitting(true);
 
-  try {
-      const res=await axios.post(`${BASE_URL}/public/contacts`, {
-      ...formData,                    // name, email, message
-      subject: "Portfolio Feedback",
-    });
-    console.log(res)
+    try {
+      const res = await axios.post(`${BASE_URL}/public/contacts`, {
+        ...formData, // name, email, message
+        subject: "Portfolio Feedback",
+      });
+      // console.log(res)
 
-    setSubmitStatus("success");       // show green banner
-    setFormData({ name: "", email: "", message: "" });
-  } catch (err) {
-    console.error(err);
-    setSubmitStatus("error");         // show red banner
-  }
-  finally {
-    setIsSubmitting(false);
-    setTimeout(() => setSubmitStatus(null), 800);
-  }
-  console.log("Form submitted:", formData);
-
-};
+      setSubmitStatus("success"); // show green banner
+      setFormData({ name: "", email: "", message: "" });
+    } catch (err) {
+      console.error(err);
+      setSubmitStatus("error"); // show red banner
+    } finally {
+      setIsSubmitting(false);
+      setTimeout(() => setSubmitStatus(null), 800);
+    }
+    // console.log("Form submitted:", formData);
+  };
 
   return (
     <section
@@ -102,6 +98,7 @@ const Contact = () => {
         </motion.div>
 
         <div className="flex flex-col lg:flex-row gap-8">
+          {/* ───────────────── Contact Information ──────────────── */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -118,6 +115,7 @@ const Contact = () => {
               </h3>
 
               <div className="space-y-8">
+                {/* Email */}
                 <div className="flex items-start">
                   <div className="bg-indigo-500/20 p-3 rounded-lg mr-4">
                     <FiMail className="text-indigo-400" size={20} />
@@ -128,7 +126,7 @@ const Contact = () => {
                     </h4>
                     <a
                       href="mailto:rajnish.kumar018001@gamil.com"
-                      className="text-indigo-300 hover:text-indigo-200 transition-colors cursor-pointer"
+                      className="break-all text-sm sm:text-base text-indigo-300 hover:text-indigo-200 transition-colors"
                     >
                       rajnish.kumar018001@gamil.com
                     </a>

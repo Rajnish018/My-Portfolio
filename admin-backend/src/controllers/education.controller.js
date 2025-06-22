@@ -52,9 +52,9 @@ export const createEducation = async (req, res) => {
 export const updateEducation = async (req, res) => {
   try {
     const { id } = req.params;
-    console.log('updateEducation request body:', req.body);
+    // console.log('updateEducation request body:', req.body);
     const { degree, institution, year, achievements } = req.body;
-    console.log('updateEducation fields:', { degree, institution, year, achievements });
+    // console.log('updateEducation fields:', { degree, institution, year, achievements });
 
     // 1. Validate ID
     if (!id?.match(/^[0-9a-fA-F]{24}$/)) {

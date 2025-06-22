@@ -24,10 +24,10 @@ export const uploadProjectImage = async (req, res, next) => {
       throw new ApiError(400, "Image file is required");
     }
 
-    // 👇 Optional: use timestamp-based public_id for uniqueness
+   
     const imagePublicId = `project_${Date.now()}`;
 
-    // ⬆️ Upload to Cloudinary
+    // 1 Upload to Cloudinary
     const upload = await cloudinary.uploader.upload(req.file.path, {
       folder: "project_images",
       public_id: imagePublicId,
@@ -39,10 +39,10 @@ export const uploadProjectImage = async (req, res, next) => {
       ],
     });
 
-    // 🧹 Remove local temp file
+    //  Remove local temp file
     await fs.unlink(req.file.path).catch(() => {});
 
-    // ✅ Return secure URL and public_id
+    // Return secure URL and public_id
     return res.status(200).json(
       new ApiRespose(200, {
         url: upload.secure_url,
@@ -158,14 +158,14 @@ export const updateProject = async (req, res) => {
   try {
     const { id } = req.params;
 
-    // 1️⃣ Validate project ID
+    // 1 Validate project ID
     if (!Types.ObjectId.isValid(id)) {
       return res.status(400).json(
         new ApiError(400, "Invalid project ID format")
       );
     }
 
-    // 2️⃣ Extract body + file
+    // 2 Extract body + file
     const {
       title,
       description,
@@ -182,7 +182,7 @@ export const updateProject = async (req, res) => {
     const uploadedImage = req.file?.filename;
     console.log(uploadedImage)
 
-    // 3️⃣ Build dynamic update object
+    // 3 Build dynamic update object
     const update = {};
 
     if (title) update.title = title.trim();
@@ -207,7 +207,7 @@ export const updateProject = async (req, res) => {
       update.isFeatured = isFeatured === true || isFeatured === "true";
     }
 
-    // 4️⃣ Category handling
+    // 4 Category handling
     if (category) {
       let categoryId;
 
@@ -232,7 +232,7 @@ export const updateProject = async (req, res) => {
       update.category = categoryId;
     }
 
-    // 5️⃣ Technologies handling
+    // 5 Technologies handling
     if (technologies) {
       let techArr;
 
@@ -257,7 +257,7 @@ export const updateProject = async (req, res) => {
       update.technologies = techArr;
     }
 
-    // 6️⃣ Perform DB update
+    // 6 Perform DB update
     const updatedProject = await Project.findByIdAndUpdate(
       id, 
       update, 

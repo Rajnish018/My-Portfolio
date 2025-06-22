@@ -28,14 +28,19 @@ const DashboardLayout = lazy(() =>
   import("./Admin Panel/Pages/DashboardLayout.jsx")
 );
 const DashboardHome = lazy(() => import("./Admin Panel/Pages/Home.jsx"));
-// const ProjectsAdmin = lazy(() => import("./Admin Panel/Pages/Project.jsx")); 
+// const ProjectsAdmin = lazy(() => import("./Admin Panel/Pages/Project.jsx"));
 const MessagesAdmin = lazy(() => import("./Admin Panel/Pages/Message.jsx"));
 const SkillsAdmin = lazy(() => import("./Admin Panel/Pages/Skills.jsx"));
 const NotFound = lazy(() => import("./Admin Panel/commpenets/NotFound.jsx")); // create this page
-const AllProjects      = lazy(() => import("./Admin Panel/Pages/Projects/AllProject.jsx"));
-const FeaturedProjects = lazy(() => import("./Admin Panel/Pages/Projects/FeaturedProjects.jsx"));
-const ArchivedProjects = lazy(() => import("./Admin Panel/Pages/Projects/ArchivedProjects"));
-
+const AllProjects = lazy(() =>
+  import("./Admin Panel/Pages/Projects/AllProject.jsx")
+);
+const FeaturedProjects = lazy(() =>
+  import("./Admin Panel/Pages/Projects/FeaturedProjects.jsx")
+);
+const ArchivedProjects = lazy(() =>
+  import("./Admin Panel/Pages/Projects/ArchivedProjects")
+);
 
 /* ───────── Portfolio wrapper ───────── */
 const Portfolio = () => (
@@ -55,7 +60,7 @@ const Portfolio = () => (
 /* ───────── Auth guard for admin ───────── */
 const PrivateRoute = ({ children }) => {
   const authed = !!localStorage.getItem("adminToken");
-   const { token } = useAuth()
+  const { token } = useAuth();
   return authed ? children : <Navigate to="/admin/login" replace />;
 };
 
@@ -108,28 +113,14 @@ function App() {
 
             {/* ───── Projects sub-routes ───── */}
             <Route path="projects" element={<AllProjects />} />
-            <Route
-              path="projects/featured"
-              element={<FeaturedProjects />}
-            />
-            <Route
-              path="projects/archived"
-              element={<ArchivedProjects />}
-            />
-            <Route
-              path="education"
-              element={<EducationAdmin/>} 
-            />
-           <Route
-              path="certifications"
-              element={<CertificationAdmin/>} 
-            />
+            <Route path="projects/featured" element={<FeaturedProjects />} />
+            <Route path="projects/archived" element={<ArchivedProjects />} />
+            <Route path="education" element={<EducationAdmin />} />
+            <Route path="certifications" element={<CertificationAdmin />} />
             {/* ───── Settings sub-routes ───── */}
-            <Route path="settings/profile" element={<Profile/>} />
-            <Route path="settings/account" element={<Account/>} />
-            <Route path="settings/appearance" element={<Appearance/>} />
-
-
+            <Route path="settings/profile" element={<Profile />} />
+            <Route path="settings/account" element={<Account />} />
+            <Route path="settings/appearance" element={<Appearance />} />
           </Route>
 
           {/* ───── 404 fallback ───── */}
